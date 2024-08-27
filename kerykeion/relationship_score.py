@@ -8,7 +8,7 @@ from kerykeion.aspects.synastry_aspects import SynastryAspects
 import logging
 from pathlib import Path
 from typing import Union
-from kerykeion.kr_types.kr_models import AstrologicalSubjectModel
+from kerykeion.kr_types.kr_models import AstrologicalSubjectModel, AspectModel
 
 
 class RelationshipScore:
@@ -17,11 +17,11 @@ class RelationshipScore:
 
     Results:
         - 0 to 5: Minimal relationship
-        - 5 to 10: Mediocre relationship
+        - 5 to 10: Medium relationship
         - 10 to 15: Important relationship
         - 15 to 20: Very important relationship
         - 20 and 35: Exceptional relationship
-        - 35 and above: Extraordinary relationship
+        - 35 and above: Rare Exceptional relationship
 
     Documentation: http://www.cirodiscepolo.it/Articoli/Discepoloele.htm
 
@@ -40,8 +40,8 @@ class RelationshipScore:
         self.second_subject = second_subject
         self.score = 0
         self.is_destiny_sign = False
-        self.relevant_aspects = []
-        self.relevant_default_aspects = []
+        self.relevant_aspects: list = []
+        self.relevant_default_aspects: list = []
         self.__all_synastry_aspects = SynastryAspects(first_subject, second_subject, new_settings_file=new_settings_file).all_aspects
 
         # Calculate all aspects at initialization
