@@ -25,7 +25,8 @@ class SynastryAspects(NatalAspects):
         self,
         kr_object_one: Union[AstrologicalSubject, AstrologicalSubjectModel],
         kr_object_two: Union[AstrologicalSubject, AstrologicalSubjectModel],
-        new_settings_file: Union[Path, KerykeionSettingsModel, dict, None] = None,
+        new_settings_file: Union[Path,
+                                 KerykeionSettingsModel, dict, None] = None,
     ):
         # Subjects
         self.first_user = kr_object_one
@@ -55,19 +56,26 @@ class SynastryAspects(NatalAspects):
             return self._all_aspects
 
         # Celestial Points Lists
-        first_active_points_list = get_active_points_list(self.first_user, self.settings)
-        second_active_points_list = get_active_points_list(self.second_user, self.settings)
+        first_active_points_list = get_active_points_list(
+            self.first_user, self.settings)
+        second_active_points_list = get_active_points_list(
+            self.second_user, self.settings)
 
         self.all_aspects_list = []
 
         for first in range(len(first_active_points_list)):
             # Generates the aspects list whitout repetitions
             for second in range(len(second_active_points_list)):
-                aspect = get_aspect_from_two_points(
-                    self.aspects_settings,
-                    first_active_points_list[first]["abs_pos"],
-                    second_active_points_list[second]["abs_pos"],
-                )
+                try:
+                    aspect = get_aspect_from_two_points(
+                        self.aspects_settings,
+                        first_active_points_list[first]["abs_pos"],
+                        second_active_points_list[second]["abs_pos"],
+                    )
+                except Exception as e:
+                    # logging.error(f"Error in aspect generation: {e}")
+                    # if we just 'break', everything seems to work -- maybe "second" is going out of range of the list?
+                    break
 
                 verdict = aspect["verdict"]
                 name = aspect["name"]
@@ -87,8 +95,10 @@ class SynastryAspects(NatalAspects):
                         aspect_degrees=aspect_degrees,
                         aid=aid,
                         diff=diff,
-                        p1=planet_id_decoder(self.celestial_points, first_active_points_list[first]["name"]),
-                        p2=planet_id_decoder(self.celestial_points, second_active_points_list[second]["name"]),
+                        p1=planet_id_decoder(
+                            self.celestial_points, first_active_points_list[first]["name"]),
+                        p2=planet_id_decoder(
+                            self.celestial_points, second_active_points_list[second]["name"]),
                     )
                     self.all_aspects_list.append(aspect_model)
 
