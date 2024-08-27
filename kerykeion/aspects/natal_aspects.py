@@ -60,7 +60,7 @@ class NatalAspects:
                             "abs_pos"], active_points_list[second]["abs_pos"]
                     )
                 except Exception as e:
-                    logging.error(f"Error in aspect generation: {e}")
+                    # logging.error(f"Error in aspect generation: {e}")
                     # if we just 'break', everything seems to work -- maybe "second" is going out of range of the list?
                     break
 
