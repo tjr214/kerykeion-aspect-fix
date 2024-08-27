@@ -54,9 +54,15 @@ class NatalAspects:
         for first in range(len(active_points_list)):
             # Generates the aspects list without repetitions
             for second in range(first + 1, len(active_points_list)):
-                aspect = get_aspect_from_two_points(
-                    self.aspects_settings, active_points_list[first]["abs_pos"], active_points_list[second]["abs_pos"]
-                )
+                try:
+                    aspect = get_aspect_from_two_points(
+                        self.aspects_settings, active_points_list[first][
+                            "abs_pos"], active_points_list[second]["abs_pos"]
+                    )
+                except Exception as e:
+                    logging.error(f"Error in aspect generation: {e}")
+                    # if we just 'break', everything seems to work -- maybe "second" is going out of range of the list?
+                    break
 
                 verdict = aspect["verdict"]
                 name = aspect["name"]
@@ -64,7 +70,6 @@ class NatalAspects:
                 aspect_degrees = aspect["aspect_degrees"]
                 aid = aspect["aid"]
                 diff = aspect["diff"]
-                
 
                 if verdict == True:
                     d_asp = {
@@ -97,7 +102,8 @@ class NatalAspects:
         or the numbers of the houses.
         """
 
-        logging.debug("Relevant aspects not already calculated, calculating now...")
+        logging.debug(
+            "Relevant aspects not already calculated, calculating now...")
         self.all_aspects
 
         aspects_filtered = []
@@ -122,7 +128,8 @@ class NatalAspects:
                 if abs(a["orbit"]) >= self.axes_orbit_settings:
                     aspects_list_subtract.append(a)
 
-        self.aspects = [item for item in aspects_filtered if item not in aspects_list_subtract]
+        self.aspects = [
+            item for item in aspects_filtered if item not in aspects_list_subtract]
 
         return self.aspects
 
@@ -131,7 +138,8 @@ if __name__ == "__main__":
     from kerykeion.utilities import setup_logging
     setup_logging(level="debug")
 
-    johnny = AstrologicalSubject("Johnny Depp", 1963, 6, 9, 0, 0, "Owensboro", "US")
+    johnny = AstrologicalSubject(
+        "Johnny Depp", 1963, 6, 9, 0, 0, "Owensboro", "US")
 
     # All aspects
     aspects = NatalAspects(johnny)
